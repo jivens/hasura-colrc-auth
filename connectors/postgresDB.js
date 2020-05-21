@@ -35,6 +35,12 @@ sequelize
   console.error('Unable to connect to the database:', err);
 });
 
+
+const userRole = "user";
+const adminRole = "admin";
+
+const createJwtToken = (body, options) => jwt.sign(body, process.env.JWT_PRIVATE_KEY, options);
+
 const User = sequelize.define('user', {
   first: { type: Sequelize.STRING },
   last: { type: Sequelize.STRING },
@@ -52,17 +58,25 @@ const loginUser_C = input => {
   //console.log(input)
   return User.findOne({
     where: { email: input.email, password: input.password }
-  }).then(res => {
+  }).then(user => {
     //console.log("we have results")
-    //console.log(res)
-    if(res) {
-      //console.log("This has data")
-      //console.log(res)
+    //console.log(user.id)
+    if (user) {
       return [{
-        password: jwt.sign(
-          { id: res.dataValues.id, email: res.dataValues.email, username: res.dataValues.username },
-          process.env.JWT_SECRET,
-          { expiresIn: '3d' }
+        password: createJwtToken(
+          {
+            "id": user.id,
+            "enail": user.email,
+            "username": user.username,
+            "https://hasura.io/jwt/claims": {
+              "x-hasura-allowed-roles": [userRole, adminRole],
+              "x-hasura-default-role": adminRole,
+              "x-hasura-user-id": user.id.toString()
+            }
+          }, 
+          { algorithm: process.env.ALGORITHM,
+            expiresIn: process.env.EXPIRES_IN
+          }
         )
       }]
     } // if
