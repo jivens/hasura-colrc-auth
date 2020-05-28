@@ -66,11 +66,11 @@ const loginUser_C = input => {
         password: createJwtToken(
           {
             "id": user.id,
-            "enail": user.email,
+            "email": user.email,
             "username": user.username,
             "https://hasura.io/jwt/claims": {
               "x-hasura-allowed-roles": [userRole, adminRole],
-              "x-hasura-default-role": adminRole,
+              "x-hasura-default-role": userRole,
               "x-hasura-user-id": user.id.toString()
             }
           }, 
