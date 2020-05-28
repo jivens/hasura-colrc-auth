@@ -47,20 +47,64 @@ const User = sequelize.define('user', {
   username: { type: Sequelize.STRING },
   email: { type: Sequelize.STRING, unique: true },
   password: { type: Sequelize.STRING },
-  roles: { type: Sequelize.STRING },
+  //roles: { type: Sequelize.STRING },
 },
 {
   charset: 'utf8mb4',
   collate: 'utf8mb4_unicode_ci'
 });
 
+const Role = sequelize.define('role', {
+  role_code: { type: Sequelize.STRING },
+  role_value: { type: Sequelize.STRING },
+},
+{
+  charset: 'utf8mb4',
+  collate: 'utf8mb4_unicode_ci'
+});
+
+const UserToRoleRelation = sequelize.define('user_roles', {
+  userId: { type: Sequelize.INTEGER },
+  roleId: { type: Sequelize.INTEGER },
+},
+{
+  charset: 'utf8mb4',
+  collate: 'utf8mb4_unicode_ci'
+});
+
+User.belongsToMany(Role, {
+  through: 'user_roles',
+  foreignKey: 'userId', 
+  otherKey: 'roleId'
+});
+Role.belongsToMany(User, {
+  through: 'user_roles',
+  foreignKey: 'roleId',
+  otherKey: 'userId'
+});
+
 const loginUser_C = input => {
   //console.log(input)
   return User.findOne({
-    where: { email: input.email, password: input.password }
+    where: { email: input.email, password: input.password },
+    include: Role 
   }).then(user => {
     //console.log("we have results")
-    //console.log(user.id)
+    //console.log(user)
+    //console.log("=========")
+    //console.log(user.roles)
+    console.log(user.email)
+    console.log(user.username)
+    hasura_roles = []
+    default_role = ''
+    user.roles.forEach(function(role) {
+      hasura_roles.push(role.role_code)
+      if (default_role !== 'admin') {
+        default_role = role.role_code
+      }
+    })
+    console.log(hasura_roles)
+    console.log(default_role)
     if (user) {
       return [{
         password: createJwtToken(
@@ -69,8 +113,8 @@ const loginUser_C = input => {
             "enail": user.email,
             "username": user.username,
             "https://hasura.io/jwt/claims": {
-              "x-hasura-allowed-roles": [userRole, adminRole],
-              "x-hasura-default-role": adminRole,
+              "x-hasura-allowed-roles": hasura_roles,
+              "x-hasura-default-role": default_role,
               "x-hasura-user-id": user.id.toString()
             }
           }, 
