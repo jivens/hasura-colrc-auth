@@ -118,7 +118,8 @@ const loginUser_C = input => {
               "x-hasura-user-id": user.id.toString()
             }
           }, 
-          { algorithm: process.env.ALGORITHM,
+          { 
+            algorithm: process.env.ALGORITHM,
             expiresIn: process.env.EXPIRES_IN
           }
         )
@@ -126,6 +127,17 @@ const loginUser_C = input => {
     } // if
   }) // then
   // do not feed password back to query, password stays in database
+}
+
+const getUserFromToken_C = input => {
+  // don't let user update his own role, only admin can update roles
+  return User.findOne({
+    where: { id: input.myid }
+  })
+  .then(user => {
+    // user.dataValues.roles = user.dataValues.roles.split(',')
+    return user.dataValues
+  })
 }
 
 const addUser_C = input => {
@@ -150,5 +162,6 @@ const addUser_C = input => {
 module.exports = {
   User,
   loginUser_C,
-  addUser_C
+  addUser_C,
+  getUserFromToken_C
 };
