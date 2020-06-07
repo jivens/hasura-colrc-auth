@@ -130,12 +130,14 @@ const loginUser_C = input => {
 }
 
 const getUserFromToken_C = input => {
-  // don't let user update his own role, only admin can update roles
+  console.log("I am getting in the goddamn getUserFromToken_C function")
   return User.findOne({
-    where: { id: input.myid }
+    where: { id: input.myid },
+    include: Role 
   })
   .then(user => {
     // user.dataValues.roles = user.dataValues.roles.split(',')
+    console.log("User from getUserFromToken_C", user)
     return user.dataValues
   })
 }

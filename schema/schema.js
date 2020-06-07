@@ -25,6 +25,16 @@ const typeDefs = `
     username: String!
     email: String!
     password: String!
+    roles: [Role!]!
+  }
+  type Role {
+    id: ID!
+    role_code: String!
+    role_value: String!
+  }  
+  type User_role {
+    userId: ID!
+    roleId: ID!
   }
   type LoginUser {
     password: String!

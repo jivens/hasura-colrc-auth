@@ -14,11 +14,19 @@ function checkToken(context) {
       message: `Username or Password is invalid`
     })
   }
-  const decoded = jwt.verify(
-    token.replace('Bearer ', ''),
-    process.env.JWT_PRIVATE_KEY,
-    { algorithms: ["RS256"] }
-  );
+  var decoded = null;
+  try {
+    decoded = jwt.verify(
+      token.replace('Bearer ', ''),
+      process.env.JWT_PUBLIC_KEY,
+      { algorithms: ["RS256"] }
+    )
+  } catch(error) {
+    if (error) {
+      console.log(error)
+      throw new Error(error)
+    }
+  }
   return decoded;
 }
 
