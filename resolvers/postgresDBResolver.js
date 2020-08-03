@@ -3,7 +3,7 @@ const { AuthorizationError, noInputError } = require('../errors/error');
 
 
 function checkToken(context) {
-  console.log(context.headers)
+  // console.log(context.headers)
   const token = context.headers.authorization;
   if (!token) {
     throw new AuthorizationError({

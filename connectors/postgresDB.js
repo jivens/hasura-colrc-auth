@@ -99,12 +99,18 @@ const loginUser_C = input => {
     default_role = ''
     user.roles.forEach(function(role) {
       hasura_roles.push(role.role_code)
-      if (default_role !== 'admin') {
+      if (role.role_code === 'manager'){
+        default_role = 'manager'
+      }
+      if (default_role !== 'manager' && role.role_code === 'update') {
+        default_role = 'update'
+      }
+      if (default_role !== 'manager' && default_role !== 'update') {
         default_role = role.role_code
       }
     })
-    console.log(hasura_roles)
-    console.log(default_role)
+    // console.log(hasura_roles)
+    // console.log(default_role)
     if (user) {
       return [{
         password: createJwtToken(
@@ -130,14 +136,14 @@ const loginUser_C = input => {
 }
 
 const getUserFromToken_C = input => {
-  console.log("I am getting in the goddamn getUserFromToken_C function")
+  // console.log("I am getting in the getUserFromToken_C function")
   return User.findOne({
     where: { id: input.myid },
     include: Role 
   })
   .then(user => {
     // user.dataValues.roles = user.dataValues.roles.split(',')
-    console.log("User from getUserFromToken_C", user)
+    // console.log("User from getUserFromToken_C", user)
     return user.dataValues
   })
 }
