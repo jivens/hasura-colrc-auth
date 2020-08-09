@@ -5,13 +5,21 @@ const {
   User,
   loginUser_C,
   addUser_C,
-  getUserFromToken_C
+  getUserFromToken_C,
 } = require('../connectors/postgresDB');
 const { // define resolvers
   loginUser_R,
   addUser_R,
   getUserFromToken_R
 } = require('../resolvers/postgresDBResolver');
+
+// *** set the variables needed for auditing *** //
+// async function setSessionVariables() {
+//   const [results, metadata] = await sequelize.query("SET application.name to 'colrc'");
+//   const [results2, metadata2] = await sequelize.query("SET application.\"user\" to 'Nicodemus, Lawrence'");
+// }
+
+// setSessionVariables()
 
 // passwrd field on type User shouldn't expose passwords
 // instead is used to store json token after successfull login query - loginUser_Q
@@ -54,7 +62,7 @@ const typeDefs = `
 const resolvers = {
   Query: {
     loginUser_Q: (_, args, context) => loginUser_R(args, loginUser_C),
-    getUserFromToken_Q: (_, args, context) => getUserFromToken_R(context, args, getUserFromToken_C)
+    getUserFromToken_Q: (_, args, context) => getUserFromToken_R(context, args, getUserFromToken_C),
   },
   Mutation: {
     // first time user is created see - connector where a view role is inserted

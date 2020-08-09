@@ -118,6 +118,7 @@ const loginUser_C = input => {
             "id": user.id,
             "email": user.email,
             "username": user.username,
+            "application.name": 'colrc',
             "https://hasura.io/jwt/claims": {
               "x-hasura-allowed-roles": hasura_roles,
               "x-hasura-default-role": default_role,
@@ -171,5 +172,5 @@ module.exports = {
   User,
   loginUser_C,
   addUser_C,
-  getUserFromToken_C
+  getUserFromToken_C,
 };
