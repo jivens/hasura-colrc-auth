@@ -53,8 +53,18 @@ const addUser_R = (input, connectorQuery) => {
   return connectorQuery.apply(this, [input]);
 };
 
+const isHuman_R = (input,connectorQuery) => {
+  if(!input) {
+    throw new noInputError({
+      message: `You must supply a valid Input!`
+  });
+}
+  return connectorQuery.apply(this, [input]);
+};
+
 module.exports = {
   loginUser_R,
   addUser_R,
-  getUserFromToken_R
+  getUserFromToken_R,
+  isHuman_R,
 };

@@ -2,6 +2,7 @@
 const Sequelize = require('sequelize');
 const jwt = require('jsonwebtoken');
 require('dotenv').config({path:__dirname+'./../.env'});
+const axios = require('axios');
 const _ = require('lodash');
 const { noRoleError } = require('../errors/error');
 
@@ -167,10 +168,25 @@ const addUser_C = input => {
   });
 }
 
+const isHuman_C = input => {
+  console.log("I am getting in the isHuman_C function")
+  console.log("the token is:", input.token)
+  const secret = process.env.RECAPTCHA_SECRET_KEY
+  axios.post(`https://www.google.com/recaptcha/api/siteverify?secret=${secret}&response=${input.token}`)
+  .then(function (response) {
+    console.log(response.data);
+    return { "token": response.data.success }
+  })
+  .catch(function (error) {
+    console.log(error);
+    return { "token": false }
+  });
+}
 
 module.exports = {
   User,
   loginUser_C,
   addUser_C,
   getUserFromToken_C,
+  isHuman_C,
 };

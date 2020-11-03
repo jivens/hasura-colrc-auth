@@ -6,11 +6,13 @@ const {
   loginUser_C,
   addUser_C,
   getUserFromToken_C,
+  isHuman_C,
 } = require('../connectors/postgresDB');
 const { // define resolvers
   loginUser_R,
   addUser_R,
-  getUserFromToken_R
+  getUserFromToken_R,
+  isHuman_R,
 } = require('../resolvers/postgresDBResolver');
 
 // *** set the variables needed for auditing *** //
@@ -50,9 +52,13 @@ const typeDefs = `
   type Token {
     token: String!
   }
+  type Human {
+    token: Boolean!
+  }
   type Query {
     loginUser_Q(email:String!,password:String!): [LoginUser]
     getUserFromToken_Q: User
+    isHuman_Q(token:String!): Human
   }
   type Mutation {
     addUser_M(first:String!, last:String!, username:String!,email:String!,password:String!): User
@@ -63,6 +69,7 @@ const resolvers = {
   Query: {
     loginUser_Q: (_, args, context) => loginUser_R(args, loginUser_C),
     getUserFromToken_Q: (_, args, context) => getUserFromToken_R(context, args, getUserFromToken_C),
+    isHuman_Q: (_, args, context) => isHuman_R(args, isHuman_C)
   },
   Mutation: {
     // first time user is created see - connector where a view role is inserted
