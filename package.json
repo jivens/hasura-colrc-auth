@@ -31,7 +31,7 @@
     "jest-serializer-vue": "^2.0.2",
     "jest-transform-stub": "^2.0.0",
     "jsonwebtoken": "^8.5.1",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.19",
     "mysql2": "^1.6.5",
     "pg": "^8.2.1",
     "react-google-recaptcha": "^2.1.0",
