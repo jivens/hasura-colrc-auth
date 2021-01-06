@@ -20,7 +20,7 @@
   "homepage": "https://github.com/arizona-linguistics/colrc-v2#readme",
   "dependencies": {
     "apollo-errors": "^1.9.0",
-    "axios": "^0.21.0",
+    "axios": "^0.21.1",
     "cors": "^2.8.5",
     "dotenv": "^8.0.0",
     "express": "^4.16.4",
